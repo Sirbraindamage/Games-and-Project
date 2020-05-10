@@ -35,20 +35,39 @@ def NewNPC():
     NPCs.add(n)
 
 
-# add individual sprites and an all sprites group
-all_sprites = py.sprite.Group()
-NPCs = py.sprite.Group()
-bullets = py.sprite.Group()
-powerups = py.sprite.Group()
-player = Player()
-all_sprites.add(player)
-for i in range(15):
-    NewNPC()
+def show_go_screen():
+    draw_text(screen, "Dimensional Drifter!", 64, WIDTH / 2, HEIGHT / 4)
+    draw_text(screen, "W,A,S,D keys to move, Click mouse 1 to fire", 18,
+              WIDTH / 2, HEIGHT / 2)
+    draw_text(screen, "Press a key to begin", 18, WIDTH / 2, HEIGHT * 3 / 4)
+    py.display.flip()
+    waiting = True
+    while waiting:
+        clock.tick(FPS)
+        for event in py.event.get():
+            if event.type == py.QUIT:
+                py.quit()
+            if event.type == py.KEYUP:
+                waiting = False
 
-score = 0
 # Game loop
+game_over = True
 running = True
 while running:
+    if game_over:
+        show_go_screen()
+        game_over = False
+        all_sprites = py.sprite.Group()
+        NPCs = py.sprite.Group()
+        bullets = py.sprite.Group()
+        powerups = py.sprite.Group()
+        player = Player()
+        all_sprites.add(player)
+        for i in range(15):
+            NewNPC()
+
+        score = 0
+
     # keep loop running at the right speed
     clock.tick(FPS)
 
@@ -88,7 +107,7 @@ while running:
         NewNPC()
 
         if player.health <= 0:
-            running = False
+            Gamer_over = True
 
     # updates the position of of mouse and rotates it towards the mouse position
     mouse_x, mouse_y = py.mouse.get_pos()

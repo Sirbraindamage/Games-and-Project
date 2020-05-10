@@ -48,7 +48,8 @@ powerup_anim['HP'] = []
 for i in range(4):
     filename = "Health_{}.png".format(i)
     img = py.image.load(path.join(img_dir, filename))
-    img_HP = py.transform.scale(img, (16, 16))
+    img.set_colorkey(BLACK)
+    img_HP = py.transform.scale(img, (30, 30))
     powerup_anim['HP'].append(img_HP)
 
 # load sounds
@@ -80,7 +81,6 @@ def draw_health_bar(surf, x, y, pct, ):
     fill_rect = py.Rect(x, y, fill, Bar_height)
     py.draw.rect(surf, GREEN, fill_rect)
     py.draw.rect(surf, WHITE, outline_rect, 2)
-
 
 class Player(py.sprite.Sprite):
     def __init__(self):
@@ -219,12 +219,17 @@ class Bullet(py.sprite.Sprite):
 class Pow(py.sprite.Sprite):
     def __init__(self, center):
         py.sprite.Sprite.__init__(self)
-        self.image = powerup_anim['HP']
+        self.image = powerup_anim['HP'][0]
+        self.frame = 0
         self.rect = self.image.get_rect()
         self.rect.center = center
         # py.draw.circle(self.image, RED, self.rect.center, self.radius)
 
     def update(self):
+        self.image = powerup_anim['HP'][self.frame]
+        self.frame += 1
+        if self.frame >= len(powerup_anim['HP']):
+            self.frame = 0
         # kill if moved of screen
         if self.rect.bottom > HEIGHT + 20 or self.rect.top < -20:
             self.kill()
@@ -255,3 +260,7 @@ class Explosion(py.sprite.Sprite):
                 self.image = expl_anim[self.size][self.frame]
                 self.rect = self.image.get_rect()
                 self.rect.center = center
+
+
+
+
